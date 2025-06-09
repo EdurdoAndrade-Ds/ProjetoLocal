@@ -1,7 +1,5 @@
 package br.com.eliel.ecommerce.modules.cliente.useCases;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ public class DeleteClienteUseCase {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void execute(UUID clienteId, String senha) {
+    public void execute(Long clienteId, String senha) {
         var cliente = this.clienteRepository.findById(clienteId)
             .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
             

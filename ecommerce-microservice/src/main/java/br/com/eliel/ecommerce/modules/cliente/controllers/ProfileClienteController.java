@@ -1,7 +1,5 @@
 package br.com.eliel.ecommerce.modules.cliente.controllers;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,23 +21,23 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/cliente")
-@Tag(name = "Cliente", description = "Informações do cliente")
+@Tag(name = "Cliente", description = "Perfil do cliente")
 public class ProfileClienteController {
 
     @Autowired
     private ProfileClienteUseCase profileClienteUseCase;
-
+    
     @GetMapping("/profile")
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(
         summary = "Perfil do cliente", 
-        description = "Rota responsável por buscar as informações do perfil do cliente logado",
+        description = "Rota responsável por retornar os dados do perfil do cliente autenticado",
         security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", 
-            description = "Perfil do cliente retornado com sucesso",
+            description = "Perfil retornado com sucesso",
             content = @Content(
                 examples = {
                     @ExampleObject(
@@ -61,18 +59,15 @@ public class ProfileClienteController {
             )
         ),
         @ApiResponse(responseCode = "401", description = "Não autorizado"),
-        @ApiResponse(responseCode = "403", description = "Acesso negado"),
-        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+        @ApiResponse(responseCode = "403", description = "Acesso negado")
     })
     public ResponseEntity<Object> profile(HttpServletRequest request) {
         try {
-            var clienteId = UUID.fromString(request.getAttribute("cliente_id").toString());
-            var cliente = this.profileClienteUseCase.execute(clienteId);
-            return ResponseEntity.ok().body(cliente);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("ID do cliente inválido");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            var clienteId = Long.parseLong(request.getAttribute("cliente_id").toString());
+            var result = this.profileClienteUseCase.execute(clienteId);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 }

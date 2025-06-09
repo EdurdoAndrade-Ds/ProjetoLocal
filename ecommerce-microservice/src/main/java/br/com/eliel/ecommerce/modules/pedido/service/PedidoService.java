@@ -18,9 +18,9 @@ public class PedidoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
-    public PedidoResponseDTO criar(PedidoRequestDTO dto) {
+    public PedidoResponseDTO criar(PedidoRequestDTO dto, Long clienteId) {
         Pedido pedido = new Pedido();
-        pedido.setClienteId(dto.getClienteId());
+        pedido.setClienteId(clienteId);
 
         List<ItemPedido> itens = dto.getItens().stream().map(itemDTO -> {
             ItemPedido item = new ItemPedido();

@@ -1,7 +1,5 @@
 package br.com.eliel.ecommerce.modules.cliente.useCases;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +12,7 @@ public class ProfileClienteUseCase {
     @Autowired
     private ClienteRepository clienteRepository;
     
-    public ProfileClienteResponseDTO execute(UUID clienteId) {
+    public ProfileClienteResponseDTO execute(Long clienteId) {
         var cliente = this.clienteRepository.findById(clienteId)
             .orElseThrow(() -> {
                 throw new RuntimeException("Cliente não encontrado");

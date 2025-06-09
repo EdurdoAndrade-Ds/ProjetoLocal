@@ -6,7 +6,6 @@ import java.util.List;
 
 @Data
 public class PedidoRequestDTO {
-    private Long clienteId;
     private List<ItemDTO> itens;
 
     @Data

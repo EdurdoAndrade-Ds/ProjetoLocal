@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AuthClienteResponseDTO {
     private String token;
-    private UUID id;
+    private Long id;
     private String username;
 }
 

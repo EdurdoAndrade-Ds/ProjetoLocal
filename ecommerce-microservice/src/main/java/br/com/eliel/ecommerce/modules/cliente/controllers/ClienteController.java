@@ -1,7 +1,5 @@
 package br.com.eliel.ecommerce.modules.cliente.controllers;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,7 +56,7 @@ public class ClienteController {
                         name = "Resposta de Sucesso",
                         value = """
                         {
-                            "id": "123e4567-e89b-12d3-a456-426614174000",
+                            "id": 1,
                             "nome": "João Silva",
                             "username": "joaosilva",
                             "email": "joao@email.com",
@@ -129,7 +127,7 @@ public class ClienteController {
         Authentication authentication
     ) {
         try {
-            var clienteId = UUID.fromString(authentication.getName());
+            var clienteId = Long.parseLong(authentication.getName());
             this.deleteClienteUseCase.execute(clienteId, deleteClienteDTO.getSenha());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -154,7 +152,7 @@ public class ClienteController {
                         name = "Resposta de Sucesso",
                         value = """
                         {
-                            "id": "123e4567-e89b-12d3-a456-426614174000",
+                            "id": 1,
                             "nome": "João Silva Atualizado",
                             "username": "joaosilva",
                             "email": "novo@email.com",
@@ -178,7 +176,7 @@ public class ClienteController {
         Authentication authentication
     ) {
         try {
-            var clienteId = UUID.fromString(authentication.getName());
+            var clienteId = Long.parseLong(authentication.getName());
             var updatedCliente = this.updateClienteUseCase.execute(clienteId, updateClienteDTO);
             return ResponseEntity.ok().body(updatedCliente);
         } catch (EntityNotFoundException e) {

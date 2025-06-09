@@ -1,7 +1,5 @@
 package br.com.eliel.ecommerce.modules.cliente.useCases;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,7 @@ public class UpdateClienteUseCase {
     @Autowired
     private ClienteRepository clienteRepository;
     
-    public ClienteEntity execute(UUID clienteId, UpdateClienteDTO updateClienteDTO) {
+    public ClienteEntity execute(Long clienteId, UpdateClienteDTO updateClienteDTO) {
         ClienteEntity cliente = this.clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
         

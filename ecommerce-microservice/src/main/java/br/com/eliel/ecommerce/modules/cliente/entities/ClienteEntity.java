@@ -29,8 +29,8 @@ import lombok.NoArgsConstructor;
 public class ClienteEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @NotBlank(message = "O campo [nome] é obrigatório")
     private String nome;

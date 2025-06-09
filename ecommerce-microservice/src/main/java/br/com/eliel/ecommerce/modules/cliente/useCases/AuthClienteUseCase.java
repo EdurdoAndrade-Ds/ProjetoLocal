@@ -30,7 +30,7 @@ public class AuthClienteUseCase {
                 throw new AuthenticationException();
             });
             
-        var passwordMatches = this.passwordEncoder.matches(authClienteDTO.getSenha(), cliente.getSenha());
+        boolean passwordMatches = this.passwordEncoder.matches(authClienteDTO.getSenha(), cliente.getSenha());
         
         if (!passwordMatches) {
             throw new AuthenticationException();

@@ -25,6 +25,7 @@ public class CreateClienteUseCase {
         
         var senha = passwordEncoder.encode(clienteEntity.getSenha());
         clienteEntity.setSenha(senha);
+        clienteEntity.setAtivo(true);
         
         var clienteCreated = this.clienteRepository.save(clienteEntity);
         return clienteCreated;
