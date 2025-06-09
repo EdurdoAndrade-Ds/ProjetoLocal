@@ -1,63 +1,58 @@
-services:
-  app:
-    container_name: ecommerce_app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8080:8080
-    environment:
-      - DATABASE_URL=jdbc:postgresql://postgres:5432/ecommerce
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
-      - JWT_SECRET=ecommerce-secret-key-2024
-      - JWT_EXPIRATION=86400000
-      - PORT=8080
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - ecommerce_network
-    restart: always
+version: '3.8'
 
-  postgres:
-    container_name: ecommerce_postgres
-    image: postgres:latest
-    ports:
-      - 5432:5432
+services:
+  db:
+    image: postgres:15
+    container_name: ecommerce-db
+    restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=ecommerce
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: ecommerce123
+    ports:
+      - "5050:5432"  # Mantenha se quiser acessar o banco localmente
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - ecommerce-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ecommerce"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U ecommerce"]
+      interval: 10s
       timeout: 5s
       retries: 5
+
+  app:
+    build:
+      context: .
+    container_name: ecommerce-api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecommerce
+      SPRING_DATASOURCE_USERNAME: ecommerce
+      SPRING_DATASOURCE_PASSWORD: ecommerce123
+      SERVER_PORT: 8080
+      SERVER_ADDRESS: 0.0.0.0
     networks:
-      - ecommerce_network
-    restart: always
+      - ecommerce-net
 
   pgadmin:
-    container_name: ecommerce_pgadmin
     image: dpage/pgadmin4
+    container_name: pgadmin
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@ecommerce.com
-      - PGADMIN_DEFAULT_PASSWORD=admin123
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - 5050:80
-    depends_on:
-      - postgres
+      - "8081:80"
     networks:
-      - ecommerce_network
-    restart: always
-
-networks:
-  ecommerce_network:
-    driver: bridge
+      - ecommerce-net
 
 volumes:
-  postgres_data:
+  pgdata:
 
+networks:
+  ecommerce-net:
+    driver: bridge
