@@ -15,7 +15,11 @@ public class PedidoResponseDTO {
     @Data
     public static class ItemDTO {
         private Long produtoId;
+        private String nomeProduto;
         private Integer quantidade;
         private BigDecimal precoUnitario;
-    }
+
+    // getters e setters
+}
+
 }

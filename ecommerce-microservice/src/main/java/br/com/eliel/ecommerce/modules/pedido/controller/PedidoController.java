@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/pedidos")
 public class PedidoController {
@@ -40,4 +42,47 @@ public class PedidoController {
         Long clienteId = Long.parseLong(authentication.getName());
         return new ResponseEntity<>(pedidoService.criar(dto, clienteId), HttpStatus.CREATED);
     }
+
+    @GetMapping
+    @PreAuthorize("hasRole('CLIENTE')")
+    @Operation(summary = "Lista todos os pedidos do cliente autenticado",
+               security = { @SecurityRequirement(name = "Bearer Authentication") })
+    public ResponseEntity<List<PedidoResponseDTO>> listar(Authentication authentication) {
+        Long clienteId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(pedidoService.listarPorCliente(clienteId));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @Operation(summary = "Busca um pedido por ID",
+               security = { @SecurityRequirement(name = "Bearer Authentication") })
+    public ResponseEntity<PedidoResponseDTO> buscarPorId(
+        @PathVariable Long id,
+        Authentication authentication
+    ) {
+        Long clienteId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(pedidoService.buscarPorId(id, clienteId));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @Operation(summary = "Cancela um pedido",
+               security = { @SecurityRequirement(name = "Bearer Authentication") })
+    public ResponseEntity<Void> cancelar(
+        @PathVariable Long id,
+        Authentication authentication
+    ) {
+        Long clienteId = Long.parseLong(authentication.getName());
+        pedidoService.cancelar(id, clienteId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/historico")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @Operation(summary = "Histórico de pedidos cancelados", security = { @SecurityRequirement(name = "Bearer Authentication") })
+    public ResponseEntity<List<PedidoResponseDTO>> historico(Authentication authentication) {
+        Long clienteId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(pedidoService.historico(clienteId));
 }
+
+} 
