@@ -5,6 +5,8 @@ import br.com.eliel.ecommerce.modules.pedido.dto.PedidoResponseDTO;
 import br.com.eliel.ecommerce.modules.pedido.entity.ItemPedido;
 import br.com.eliel.ecommerce.modules.pedido.entity.Pedido;
 import br.com.eliel.ecommerce.modules.pedido.repository.PedidoRepository;
+import br.com.eliel.ecommerce.modules.product.entities.Product;
+import br.com.eliel.ecommerce.modules.product.service.ProductService;
 import lombok.Data;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +23,20 @@ public class PedidoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
+    @Autowired
+    private ProductService productService;
+
     public PedidoResponseDTO criar(PedidoRequestDTO dto, Long clienteId) {
         Pedido pedido = new Pedido();
         pedido.setClienteId(clienteId);
 
         List<ItemPedido> itens = dto.getItens().stream().map(itemDTO -> {
+            Product product = productService.buscarPorId(itemDTO.getProdutoId());
             ItemPedido item = new ItemPedido();
             item.setProdutoId(itemDTO.getProdutoId());
-            item.setNomeProduto(itemDTO.getNomeProduto());
+            item.setNomeProduto(product.getNome());
             item.setQuantidade(itemDTO.getQuantidade());
-            item.setPrecoUnitario(BigDecimal.TEN); // Preço fixo
+            item.setPrecoUnitario(product.getPreco());
             item.setPedido(pedido);
             return item;
         }).collect(Collectors.toList());

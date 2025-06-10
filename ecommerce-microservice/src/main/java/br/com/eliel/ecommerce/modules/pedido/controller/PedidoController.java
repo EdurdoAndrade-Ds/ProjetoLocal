@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pedidos")
+@Tag(name = "Pedidos", description = "API para gerenciamento de pedidos")
 public class PedidoController {
 
     @Autowired
@@ -27,6 +29,7 @@ public class PedidoController {
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(
         summary = "Cria um novo pedido",
+        description = "Cria um novo pedido para o cliente autenticado. O ID do cliente é obtido automaticamente da autenticação.",
         security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses(value = {
@@ -45,8 +48,11 @@ public class PedidoController {
 
     @GetMapping
     @PreAuthorize("hasRole('CLIENTE')")
-    @Operation(summary = "Lista todos os pedidos do cliente autenticado",
-               security = { @SecurityRequirement(name = "Bearer Authentication") })
+    @Operation(
+        summary = "Lista todos os pedidos do cliente autenticado",
+        description = "Retorna todos os pedidos do cliente autenticado. O ID do cliente é obtido automaticamente da autenticação.",
+        security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
     public ResponseEntity<List<PedidoResponseDTO>> listar(Authentication authentication) {
         Long clienteId = Long.parseLong(authentication.getName());
         return ResponseEntity.ok(pedidoService.listarPorCliente(clienteId));
@@ -54,8 +60,11 @@ public class PedidoController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('CLIENTE')")
-    @Operation(summary = "Busca um pedido por ID",
-               security = { @SecurityRequirement(name = "Bearer Authentication") })
+    @Operation(
+        summary = "Busca um pedido por ID",
+        description = "Busca um pedido específico do cliente autenticado. O ID do cliente é obtido automaticamente da autenticação.",
+        security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
     public ResponseEntity<PedidoResponseDTO> buscarPorId(
         @PathVariable Long id,
         Authentication authentication
@@ -66,8 +75,11 @@ public class PedidoController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('CLIENTE')")
-    @Operation(summary = "Cancela um pedido",
-               security = { @SecurityRequirement(name = "Bearer Authentication") })
+    @Operation(
+        summary = "Cancela um pedido",
+        description = "Cancela um pedido específico do cliente autenticado. O ID do cliente é obtido automaticamente da autenticação.",
+        security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
     public ResponseEntity<Void> cancelar(
         @PathVariable Long id,
         Authentication authentication
@@ -79,10 +91,13 @@ public class PedidoController {
 
     @GetMapping("/historico")
     @PreAuthorize("hasRole('CLIENTE')")
-    @Operation(summary = "Histórico de pedidos cancelados", security = { @SecurityRequirement(name = "Bearer Authentication") })
+    @Operation(
+        summary = "Histórico de pedidos cancelados",
+        description = "Retorna o histórico de pedidos cancelados do cliente autenticado. O ID do cliente é obtido automaticamente da autenticação.",
+        security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
     public ResponseEntity<List<PedidoResponseDTO>> historico(Authentication authentication) {
         Long clienteId = Long.parseLong(authentication.getName());
         return ResponseEntity.ok(pedidoService.historico(clienteId));
-}
-
+    }
 } 

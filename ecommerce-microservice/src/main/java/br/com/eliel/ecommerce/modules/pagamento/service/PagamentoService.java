@@ -5,11 +5,14 @@ import br.com.eliel.ecommerce.modules.pagamento.entity.Pagamento;
 import br.com.eliel.ecommerce.modules.pagamento.repository.PagamentoRepository;
 import br.com.eliel.ecommerce.modules.pedido.entity.Pedido;
 import br.com.eliel.ecommerce.modules.pedido.repository.PedidoRepository;
+import lombok.Data;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Data
 @Service
 public class PagamentoService {
 
